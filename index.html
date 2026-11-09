@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Study Café</title>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <main id="app">
+    <button class="map-button" id="streetMapBtn" type="button" aria-label="Back to the street map">
+      🗺️ street
+    </button>
+
+    <!-- Welcome Screen -->
+    <section id="welcome" class="welcome screen">
+      <div class="sky"></div>
+      <div class="ground"></div>
+
+      <div class="street-header">
+        <span class="header-tag">city block</span>
+        <h2>pick your stop</h2>
+      </div>
+
+      <div class="street-scene" id="streetScroll" aria-label="Shops along the street">
+        <div class="street-strip">
+          <button class="shop shop-cafe" type="button" data-shop="cafe" aria-label="Enter the cafe">
+            <span class="shop-sign">café</span>
+            <span class="shop-window">
+              <span></span>
+              <span></span>
+              <span></span>
+            </span>
+            <span class="shop-door"><span class="door-knob"></span></span>
+            <span class="shop-badge">study</span>
+          </button>
+
+          <button class="shop shop-library" type="button" data-shop="library" aria-label="Enter the library">
+            <span class="shop-sign">library</span>
+            <span class="shop-window bookshelf">
+              <span></span>
+              <span></span>
+              <span></span>
+            </span>
+            <span class="shop-door"><span class="door-knob"></span></span>
+            <span class="shop-badge">focus</span>
+          </button>
+
+          <button class="shop shop-arcade" type="button" data-shop="arcade" aria-label="Enter the arcade">
+            <span class="shop-sign">arcade</span>
+            <span class="shop-window neon-window">
+              <span></span>
+              <span></span>
+              <span></span>
+            </span>
+            <span class="shop-door"><span class="door-knob"></span></span>
+            <span class="shop-badge">break</span>
+          </button>
+
+          <button class="shop shop-jazz" type="button" data-shop="studio" aria-label="Enter the studio">
+            <span class="shop-sign">studio</span>
+            <span class="shop-window">
+              <span></span>
+              <span></span>
+              <span></span>
+            </span>
+            <span class="shop-door"><span class="door-knob"></span></span>
+            <span class="shop-badge">create</span>
+          </button>
+        </div>
+      </div>
+
+      <button class="audio-note" id="musicToggle" type="button">
+        welcome!
+      </button>
+    </section>
+
+
+    <!-- Library Study Screen -->
+    <section id="library" class="paper-screen screen hidden">
+      <div class="paper library-paper">
+        <div class="mini-mark">📚</div>
+
+        <h1>how many books are you reading?</h1>
+
+        <div class="book-picker" id="bookPicker">
+          <button class="book-option selected" type="button" data-books="1" data-minutes="15">
+            <span>1</span>
+            <small>book</small>
+            <em>15 min</em>
+          </button>
+
+          <button class="book-option" type="button" data-books="2" data-minutes="25">
+            <span>2</span>
+            <small>books</small>
+            <em>25 min</em>
+          </button>
+
+          <button class="book-option" type="button" data-books="3" data-minutes="45">
+            <span>3</span>
+            <small>books</small>
+            <em>45 min</em>
+          </button>
+
+          <button class="book-option" type="button" data-books="4" data-minutes="60">
+            <span>4</span>
+            <small>books</small>
+            <em>60 min</em>
+          </button>
+        </div>
+
+        <div class="library-summary" id="librarySummary">
+          1 book = 15 minutes of focused reading
+        </div>
+
+        <button class="primary" id="libraryNext" type="button">start studying</button>
+
+        <button class="back-link" data-back="welcome" type="button">← back to street</button>
+      </div>
+    </section>
+
+    <!-- Drink Selection -->
+    <section
+      id="order"
+      class="paper-screen screen hidden"
+    >
+      <div class="paper">
+
+        <div class="mini-mark">☕</div>
+
+        <h1>what would you like?</h1>
+
+        <div class="drink-grid" id="drinkGrid">
+
+          <button class="drink" data-drink="americano">
+            <span class="drink-art red">☕</span>
+            <span>americano</span>
+          </button>
+
+          <button class="drink" data-drink="matcha">
+            <span class="drink-art green">🥤</span>
+            <span>matcha</span>
+          </button>
+
+          <button class="drink" data-drink="cappuccino">
+            <span class="drink-art latte">☕</span>
+            <span>cappuccino</span>
+          </button>
+
+          <button class="drink" data-drink="latte">
+            <span class="drink-art cream">🥛</span>
+            <span>latte</span>
+          </button>
+
+          <button class="drink" data-drink="mocha">
+            <span class="drink-art brown">🍵</span>
+            <span>mocha</span>
+          </button>
+
+          <button class="drink" data-drink="black tea">
+            <span class="drink-art tea">🧋</span>
+            <span>boba</span>
+          </button>
+
+        </div>
+
+        <button
+          class="primary"
+          id="drinkNext"
+          disabled
+        >
+          choose a drink first
+        </button>
+
+      </div>
+    </section>
+
+
+    <!-- Duration Selection -->
+    <section
+      id="size"
+      class="paper-screen screen hidden"
+    >
+      <div class="paper size-paper">
+
+        <div class="chosen-art" id="chosenArt">
+          🥤
+        </div>
+
+        <div class="sizes">
+
+          <button
+            class="size-option selected"
+            data-minutes="25"
+          >
+            <span>small</span>
+            <i></i>
+            <span>25 minutes</span>
+          </button>
+
+          <button
+            class="size-option"
+            data-minutes="45"
+          >
+            <span>medium</span>
+            <i></i>
+            <span>45 minutes</span>
+          </button>
+
+          <button
+            class="size-option"
+            data-minutes="60"
+          >
+            <span>large</span>
+            <i></i>
+            <span>60 minutes</span>
+          </button>
+
+          <button
+            class="size-option"
+            data-minutes="0"
+          >
+            <span>unlimited</span>
+            <i></i>
+            <span>∞</span>
+          </button>
+
+        </div>
+
+        <button class="primary" id="sizeNext">
+          next
+        </button>
+
+        <button
+          class="back-link"
+          data-back="order"
+        >
+          ← back
+        </button>
+
+      </div>
+    </section>
+
+
+    <!-- Name / Receipt Screen -->
+    <section
+      id="name"
+      class="paper-screen screen hidden"
+    >
+      <div class="paper name-paper">
+
+        <div class="receipt">
+
+          <small>DRINK FOR</small>
+
+          <input
+            id="nameInput"
+            maxlength="24"
+            placeholder="Name"
+            aria-label="Your name"
+          />
+
+          <div class="receipt-line"></div>
+
+          <div class="receipt-bottom">
+            <span id="receiptDrink">
+              1X TALL MATCHA
+            </span>
+
+            <span>
+              ORDER #<b id="orderNumber">001</b>
+            </span>
+          </div>
+
+        </div>
+
+        <div class="task-panel" aria-label="Session checklist">
+          <h2>today's checklist</h2>
+
+          <label class="task-row">
+            <span>main task</span>
+            <input id="taskMainInput" maxlength="42" placeholder="Finish the draft" />
+          </label>
+
+          <label class="task-row">
+            <span>bonus task</span>
+            <input id="taskBonusInput" maxlength="42" placeholder="Review notes" />
+          </label>
+
+          <label class="task-row">
+            <span>extra win</span>
+            <input id="taskExtraInput" maxlength="42" placeholder="Prep tomorrow" />
+          </label>
+        </div>
+
+        <button class="primary" id="startBtn">
+          next
+        </button>
+
+        <button
+          class="back-link"
+          data-back="size"
+        >
+          ← back
+        </button>
+
+      </div>
+    </section>
+
+    <!-- Profile Screen -->
+    <section
+      id="profile"
+      class="paper-screen screen hidden"
+    >
+      <div class="paper profile-paper">
+        <div class="profile-header">your café profile</div>
+
+        <div class="profile-form">
+          <div class="profile-note">
+            Keep this as your personal café space, with your focus list and break routine.
+          </div>
+        </div>
+
+        <div class="profile-actions">
+          <button class="primary" id="saveProfileBtn">save</button>
+          <button class="back-link" data-back="welcome">← back</button>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- Focus Timer -->
+    <section
+      id="focus"
+      class="focus-screen screen hidden"
+    >
+
+      <button
+        class="hanging coffee-hanger"
+        id="changeDrink"
+        title="Change drink"
+      >
+        ☕
+      </button>
+
+      <button
+        class="hanging profile-hanger"
+        id="profileBtn"
+        title="Your café profile"
+      >
+        ✦
+      </button>
+
+      <button
+        class="focus-label"
+        id="focusMode"
+      >
+        focus
+      </button>
+
+      <div class="timer" id="timer">
+        25:00
+      </div>
+
+      <div class="goal">
+
+        <input
+          id="goalName"
+          value="your name"
+          aria-label="Name"
+        />
+
+        <span>will</span>
+
+        <input
+          id="goalInput"
+          placeholder="write your goal"
+          aria-label="Your goal"
+        />
+
+      </div>
+
+      <div class="focus-tasks" aria-live="polite">
+        <div class="focus-task">
+          <span>main</span>
+          <strong id="taskMainDisplay">finish the draft</strong>
+        </div>
+
+        <div class="focus-task">
+          <span>bonus</span>
+          <strong id="taskBonusDisplay">review notes</strong>
+        </div>
+
+        <div class="focus-task">
+          <span>extra</span>
+          <strong id="taskExtraDisplay">prep tomorrow</strong>
+        </div>
+      </div>
+
+      <div class="table-curve">
+        <div class="steam-stack" aria-hidden="true">
+          <span class="steam s1"></span>
+          <span class="steam s2"></span>
+          <span class="steam s3"></span>
+        </div>
+
+        <div class="focus-drink" id="focusDrink">
+          🥤
+        </div>
+      </div>
+
+      <button
+        class="round-arrow left"
+        id="prevBtn"
+        aria-label="Previous screen"
+      >
+        ←
+      </button>
+
+      <button
+        class="round-arrow right"
+        id="nextBtn"
+        aria-label="Next screen"
+      >
+        →
+      </button>
+
+      <div class="timer-controls">
+
+        <button
+          id="pauseBtn"
+          aria-label="Pause timer"
+        >
+          Ⅱ
+        </button>
+
+        <button
+          id="resetBtn"
+          aria-label="Reset timer"
+        >
+          □
+        </button>
+
+      </div>
+
+    </section>
+
+    <section id="arcade" class="paper-screen screen hidden">
+      <div class="paper arcade-paper">
+        <div class="mini-mark">🎮</div>
+        <h1>arcade break</h1>
+
+        <div class="arcade-grid">
+          <div class="mini-game">
+            <div class="mini-game-header">
+              <span>tic tac toe</span>
+              <button class="small-reset" data-game="ttt" type="button">reset</button>
+            </div>
+            <div class="ttt-board" id="tttBoard" aria-label="Tic Tac Toe board">
+              <button class="ttt-cell" data-index="0" type="button"></button>
+              <button class="ttt-cell" data-index="1" type="button"></button>
+              <button class="ttt-cell" data-index="2" type="button"></button>
+              <button class="ttt-cell" data-index="3" type="button"></button>
+              <button class="ttt-cell" data-index="4" type="button"></button>
+              <button class="ttt-cell" data-index="5" type="button"></button>
+              <button class="ttt-cell" data-index="6" type="button"></button>
+              <button class="ttt-cell" data-index="7" type="button"></button>
+              <button class="ttt-cell" data-index="8" type="button"></button>
+            </div>
+            <div class="game-status" id="tttStatus">player X turn</div>
+          </div>
+
+          <div class="mini-game">
+            <div class="mini-game-header">
+              <span>memory match</span>
+              <button class="small-reset" data-game="memory" type="button">reset</button>
+            </div>
+            <div class="memory-board" id="memoryBoard" aria-label="Memory match board"></div>
+            <div class="game-status" id="memoryStatus">find all the pairs</div>
+          </div>
+
+          <div class="mini-game wordle-game">
+            <div class="mini-game-header">
+              <span>wordle</span>
+              <button class="small-reset" data-game="wordle" type="button">reset</button>
+            </div>
+
+            <div class="wordle-grid" id="wordleGrid" aria-label="Wordle board">
+              <div class="wordle-row">
+                <span class="wordle-box"></span>
+                <span class="wordle-box"></span>
+                <span class="wordle-box"></span>
+                <span class="wordle-box"></span>
+                <span class="wordle-box"></span>
+              </div>
+              <div class="wordle-row">
+                <span class="wordle-box"></span>
+                <span class="wordle-box"></span>
+                <span class="wordle-box"></span>
+                <span class="wordle-box"></span>
+                <span class="wordle-box"></span>
+              </div>
+              <div class="wordle-row">
+                <span class="wordle-box"></span>
+                <span class="wordle-box"></span>
+                <span class="wordle-box"></span>
+                <span class="wordle-box"></span>
+                <span class="wordle-box"></span>
+              </div>
+              <div class="wordle-row">
+                <span class="wordle-box"></span>
+                <span class="wordle-box"></span>
+                <span class="wordle-box"></span>
+                <span class="wordle-box"></span>
+                <span class="wordle-box"></span>
+              </div>
+              <div class="wordle-row">
+                <span class="wordle-box"></span>
+                <span class="wordle-box"></span>
+                <span class="wordle-box"></span>
+                <span class="wordle-box"></span>
+                <span class="wordle-box"></span>
+              </div>
+              <div class="wordle-row">
+                <span class="wordle-box"></span>
+                <span class="wordle-box"></span>
+                <span class="wordle-box"></span>
+                <span class="wordle-box"></span>
+                <span class="wordle-box"></span>
+              </div>
+            </div>
+
+            <div class="wordle-controls">
+              <input id="wordleInput" maxlength="5" aria-label="Your guess" placeholder="guess" />
+              <button class="primary wordle-submit" id="wordleSubmit" type="button">guess</button>
+            </div>
+            <div class="game-status" id="wordleStatus">guess the 5-letter word</div>
+          </div>
+        </div>
+
+        <button class="back-link" data-back="welcome" type="button">← back to street</button>
+      </div>
+    </section>
+
+    <section id="reward" class="paper-screen screen hidden">
+      <div class="reward-card">
+        <small>BREAK EARNED</small>
+        <h2>take a tiny reset.</h2>
+
+        <div class="reward-options">
+          <button class="reward-option" data-action="stretch" type="button">stretch</button>
+          <button class="reward-option" data-action="walk" type="button">walk</button>
+          <button class="reward-option" data-action="tea" type="button">tea refill</button>
+        </div>
+
+        <button class="primary" id="rewardBack" type="button">back to café</button>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
