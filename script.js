@@ -39,8 +39,9 @@ const drinkEmoji = {
   matcha: "🥤",
   cappuccino: "☕",
   latte: "🥛",
-  mocha: "☕",
-  "black tea": "🍵"
+  mocha: "🍵",
+  "black tea": "🧋",
+  boba: "🧋"
 };
 
 const profileKey = "focusCafeProfile";
@@ -94,6 +95,20 @@ function applyTimeOfDayTheme() {
   document.body.dataset.timeOfDay = time;
 }
 
+function syncDrinkDisplay() {
+  const drinkIcon = drinkEmoji[chosenDrink] || drinkEmoji.matcha;
+
+  const chosenArt = document.getElementById("chosenArt");
+  if (chosenArt) {
+    chosenArt.textContent = drinkIcon;
+  }
+
+  const focusDrink = document.getElementById("focusDrink");
+  if (focusDrink) {
+    focusDrink.textContent = drinkIcon;
+  }
+}
+
 function setDrink(drink) {
   chosenDrink = drink;
 
@@ -105,6 +120,8 @@ function setDrink(drink) {
         button.dataset.drink === drink
       );
     });
+
+  syncDrinkDisplay();
 
   const drinkNext = document.getElementById("drinkNext");
   if (drinkNext) {
@@ -275,6 +292,14 @@ function resetSessionFlow() {
   drinkButtons.forEach(button => {
     button.classList.toggle("selected", button.dataset.drink === chosenDrink);
   });
+
+  const drinkNext = document.getElementById("drinkNext");
+  if (drinkNext) {
+    drinkNext.disabled = false;
+    drinkNext.textContent = "next";
+  }
+
+  syncDrinkDisplay();
 
   if (document.getElementById("goalInput")) {
     document.getElementById("goalInput").value = "write your goal";
