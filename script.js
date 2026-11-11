@@ -2,6 +2,10 @@ const screens = [
   "welcome",
   "library",
   "arcade",
+  "garden",
+  "breathing",
+  "sidequests",
+  "bakery",
   "order",
   "size",
   "name",
@@ -17,6 +21,11 @@ let chosenBooks = 1;
 let sessionType = "cafe";
 let remaining = 25 * 60;
 let timerInterval = null;
+let breathingInterval = null;
+let breathingPhase = "inhale";
+let breathingSecondsRemaining = 4;
+let completedBreaths = 0;
+let breathingFinished = false;
 let paused = false;
 let musicEnabled = false;
 let audioContext = null;
@@ -216,6 +225,10 @@ function startTimer() {
 }
 
 function show(id) {
+  if (id !== "breathing") {
+    stopBreathing();
+  }
+
   screens.forEach(screen => {
     const el = document.getElementById(screen);
     if (el) {
@@ -314,12 +327,25 @@ function toggleMusic() {
 function resetSessionFlow() {
   chosenDrink = cafeProfile.favoriteDrink || "matcha";
   chosenMinutes = 25;
+  chosenBooks = 1;
   remaining = 25 * 60;
   paused = false;
 
   document.querySelectorAll(".size-option").forEach(option => {
     option.classList.toggle("selected", Number(option.dataset.minutes) === 25);
+    option.setAttribute("aria-expanded", "false");
   });
+  document.getElementById("cafeCustomTime").hidden = true;
+  document.getElementById("cafeCustomMinutes").value = "30";
+  document.querySelectorAll(".book-option").forEach((option, index) => {
+    option.classList.toggle("selected", index === 0);
+    option.setAttribute("aria-expanded", "false");
+  });
+  document.getElementById("libraryCustomTime").hidden = true;
+  document.getElementById("libraryCustomMinutes").value = "30";
+  document.getElementById("librarySummary").textContent =
+    "1 book = 15 minutes of focused reading";
+  document.getElementById("libraryNext").disabled = false;
 
   const drinkButtons = document.querySelectorAll(".drink");
   drinkButtons.forEach(button => {
@@ -348,7 +374,8 @@ function openShop(shopName) {
     cafe: "order",
     library: "library",
     arcade: "arcade",
-    studio: "profile"
+    garden: "garden",
+    bakery: "bakery"
   };
 
   const target = destinations[shopName] || "welcome";
@@ -385,6 +412,193 @@ if (streetMapBtn) {
   streetMapBtn.addEventListener("click", goToStreetMap);
 }
 
+const gardenMessages = {
+  stretch: "Roll your shoulders gently, then reach up and stretch."
+};
+
+const bakeryMessages = {
+  croissant: "A buttery croissant sounds lovely.",
+  cookie: "A chocolate cookie is a sweet little reward.",
+  muffin: "A berry muffin is ready for your break."
+};
+
+function setupShopChoices(groupId, messageId, messages) {
+  const group = document.getElementById(groupId);
+  const message = document.getElementById(messageId);
+
+  if (!group || !message) {
+    return;
+  }
+
+  group.querySelectorAll(".shop-choice").forEach(button => {
+    button.addEventListener("click", () => {
+      group.querySelectorAll(".shop-choice").forEach(choice => {
+        const selected = choice === button;
+        choice.classList.toggle("selected", selected);
+        choice.setAttribute("aria-pressed", String(selected));
+      });
+
+      message.textContent = messages[button.dataset.choice];
+    });
+  });
+}
+
+const gardenChoices = document.getElementById("gardenChoices");
+if (gardenChoices) {
+  gardenChoices.querySelectorAll(".shop-choice").forEach(button => {
+    button.addEventListener("click", () => {
+      gardenChoices.querySelectorAll(".shop-choice").forEach(choice => {
+        const selected = choice === button;
+        choice.classList.toggle("selected", selected);
+        choice.setAttribute("aria-pressed", String(selected));
+      });
+
+      const choice = button.dataset.choice;
+      if (choice === "breathe") {
+        resetBreathing();
+        show("breathing");
+        startBreathing();
+      } else if (choice === "outside") {
+        renderSidequests();
+        show("sidequests");
+      } else {
+        document.getElementById("gardenMessage").textContent = gardenMessages[choice];
+      }
+    });
+  });
+}
+
+setupShopChoices("bakeryChoices", "bakeryMessage", bakeryMessages);
+
+function updateBreathingDisplay() {
+  const phase = document.getElementById("breathingPhase");
+  const countdown = document.getElementById("breathingCountdown");
+  const round = document.getElementById("breathingRound");
+  const orb = document.getElementById("breathingOrb");
+
+  if (phase) {
+    phase.textContent = breathingFinished
+      ? "lovely work"
+      : breathingPhase === "inhale" ? "breathe in" : "breathe out";
+  }
+  if (countdown) {
+    countdown.textContent = breathingFinished ? "✓" : breathingSecondsRemaining;
+  }
+  if (round) {
+    round.textContent = breathingFinished
+      ? "your garden break is complete"
+      : `breath ${completedBreaths + 1} of 3`;
+  }
+  if (orb) {
+    orb.classList.toggle("breathing-in", !breathingFinished && breathingPhase === "inhale");
+    orb.classList.toggle("breathing-out", !breathingFinished && breathingPhase === "exhale");
+    orb.classList.toggle("breathing-done", breathingFinished);
+  }
+}
+
+function stopBreathing() {
+  if (breathingInterval !== null) {
+    clearInterval(breathingInterval);
+    breathingInterval = null;
+  }
+}
+
+function resetBreathing() {
+  stopBreathing();
+  breathingPhase = "inhale";
+  breathingSecondsRemaining = 4;
+  completedBreaths = 0;
+  breathingFinished = false;
+  document.getElementById("breathingPause").textContent = "pause";
+  updateBreathingDisplay();
+}
+
+function startBreathing() {
+  if (breathingInterval !== null || breathingFinished) {
+    return;
+  }
+
+  const pauseButton = document.getElementById("breathingPause");
+  pauseButton.textContent = "pause";
+  breathingInterval = setInterval(() => {
+    breathingSecondsRemaining--;
+
+    if (breathingSecondsRemaining <= 0) {
+      if (breathingPhase === "inhale") {
+        breathingPhase = "exhale";
+        breathingSecondsRemaining = 6;
+      } else {
+        completedBreaths++;
+        if (completedBreaths >= 3) {
+          breathingFinished = true;
+          stopBreathing();
+          pauseButton.textContent = "back to garden";
+        } else {
+          breathingPhase = "inhale";
+          breathingSecondsRemaining = 4;
+        }
+      }
+    }
+
+    updateBreathingDisplay();
+  }, 1000);
+}
+
+document.getElementById("breathingPause").addEventListener("click", () => {
+  if (breathingFinished) {
+    show("garden");
+  } else if (breathingInterval !== null) {
+    stopBreathing();
+    document.getElementById("breathingPause").textContent = "resume";
+  } else {
+    startBreathing();
+  }
+});
+
+const natureSidequests = [
+  "Find a blade of grass and admire it without picking it.",
+  "Reach toward a tree from the ground—no climbing needed.",
+  "Sketch a rock or leaf, and leave it where you found it.",
+  "Spot three different shades of green nearby.",
+  "Listen quietly and count how many different nature sounds you hear.",
+  "Find a cloud that looks like something fun.",
+  "Notice a tiny detail on a plant, like a vein or a new bud.",
+  "Take three slow steps and notice how the ground feels beneath your feet."
+];
+
+function renderSidequests() {
+  const list = document.getElementById("sidequestList");
+  const shuffledQuests = [...natureSidequests];
+
+  for (let index = shuffledQuests.length - 1; index > 0; index--) {
+    const swapIndex = Math.floor(Math.random() * (index + 1));
+    [shuffledQuests[index], shuffledQuests[swapIndex]] =
+      [shuffledQuests[swapIndex], shuffledQuests[index]];
+  }
+
+  list.replaceChildren();
+  shuffledQuests.slice(0, 4).forEach((quest, index) => {
+    const item = document.createElement("li");
+    const label = document.createElement("label");
+    const checkbox = document.createElement("input");
+    const text = document.createElement("span");
+
+    checkbox.type = "checkbox";
+    checkbox.id = `sidequest-${index}`;
+    text.textContent = quest;
+    checkbox.addEventListener("change", () => {
+      item.classList.toggle("completed", checkbox.checked);
+    });
+
+    label.htmlFor = checkbox.id;
+    label.append(checkbox, text);
+    item.append(label);
+    list.append(item);
+  });
+}
+
+document.getElementById("newSidequests").addEventListener("click", renderSidequests);
+
 const musicToggle = document.getElementById("musicToggle");
 if (musicToggle) {
   musicToggle.addEventListener("click", toggleMusic);
@@ -405,6 +619,7 @@ function updateLibrarySelection(button) {
 
   libraryButtons.forEach(option => {
     option.classList.toggle("selected", option === button);
+    option.setAttribute("aria-expanded", "false");
   });
 
   chosenMinutes = minutes;
@@ -417,9 +632,62 @@ function updateLibrarySelection(button) {
   }
 }
 
+function isValidCustomMinutes(input) {
+  const minutes = Number(input.value);
+  return input.value.trim() !== "" &&
+    Number.isInteger(minutes) &&
+    minutes >= Number(input.min) &&
+    minutes <= Number(input.max);
+}
+
+const libraryCustomTime = document.getElementById("libraryCustomTime");
+const libraryCustomMinutes = document.getElementById("libraryCustomMinutes");
+const libraryCustomOption = document.querySelector('.book-option[data-custom="true"]');
+
+function updateLibraryCustomTime() {
+  const valid = isValidCustomMinutes(libraryCustomMinutes);
+  libraryNext.disabled = !valid;
+
+  if (valid) {
+    chosenMinutes = Number(libraryCustomMinutes.value);
+    remaining = chosenMinutes * 60;
+    updateTime();
+    librarySummary.textContent = `Your open reading session = ${chosenMinutes} minutes`;
+  } else {
+    librarySummary.textContent = "Enter a whole number from 1 to 1,440 minutes";
+  }
+}
+
+if (libraryCustomOption) {
+  libraryCustomOption.addEventListener("click", () => {
+    libraryButtons.forEach(option => {
+      option.classList.toggle("selected", option === libraryCustomOption);
+      option.setAttribute("aria-expanded", String(option === libraryCustomOption));
+    });
+    libraryCustomTime.hidden = false;
+    chosenBooks = 1;
+    libraryNext.disabled = false;
+    updateLibraryCustomTime();
+    libraryCustomMinutes.focus();
+  });
+}
+
+libraryCustomMinutes.addEventListener("input", () => {
+  if (libraryCustomOption.classList.contains("selected")) {
+    updateLibraryCustomTime();
+  }
+});
+
 if (libraryButtons.length) {
   libraryButtons.forEach(button => {
+    if (button === libraryCustomOption) {
+      return;
+    }
+
     button.addEventListener("click", () => {
+      libraryCustomTime.hidden = true;
+      libraryNext.disabled = false;
+      libraryButtons.forEach(option => option.setAttribute("aria-expanded", "false"));
       updateLibrarySelection(button);
     });
   });
@@ -429,8 +697,16 @@ const libraryNext = document.getElementById("libraryNext");
 if (libraryNext) {
   libraryNext.addEventListener("click", () => {
     const selectedBooks = document.querySelector(".book-option.selected");
-    const books = Number(selectedBooks?.dataset.books || 1);
-    const minutes = Number(selectedBooks?.dataset.minutes || 15);
+    const isCustom = selectedBooks?.dataset.custom === "true";
+    if (isCustom && !isValidCustomMinutes(libraryCustomMinutes)) {
+      libraryCustomMinutes.focus();
+      return;
+    }
+
+    const books = isCustom ? 1 : Number(selectedBooks?.dataset.books || 1);
+    const minutes = isCustom
+      ? Number(libraryCustomMinutes.value)
+      : Number(selectedBooks?.dataset.minutes || 15);
 
     chosenMinutes = minutes;
     chosenBooks = books;
@@ -438,7 +714,9 @@ if (libraryNext) {
     remaining = minutes * 60;
     updateTime();
 
-    document.getElementById("receiptDrink").textContent = `${books} BOOK${books > 1 ? "S" : ""}`;
+    document.getElementById("receiptDrink").textContent = isCustom
+      ? `OPEN READING · ${minutes} MIN`
+      : `${books} BOOK${books > 1 ? "S" : ""}`;
     document.getElementById("orderNumber").textContent = orderNo;
     show("name");
   });
@@ -475,21 +753,53 @@ document
   .querySelectorAll(".size-option")
   .forEach(button => {
     button.addEventListener("click", () => {
-      chosenMinutes = Number(button.dataset.minutes);
+      const isCustom = button.dataset.custom === "true";
 
       document
         .querySelectorAll(".size-option")
         .forEach(option => {
           option.classList.toggle("selected", option === button);
+          option.setAttribute("aria-expanded", String(option === button && isCustom));
         });
+
+      document.getElementById("cafeCustomTime").hidden = !isCustom;
+      if (isCustom) {
+        updateCafeCustomTime();
+        document.getElementById("cafeCustomMinutes").focus();
+      } else {
+        chosenMinutes = Number(button.dataset.minutes);
+        document.getElementById("sizeNext").disabled = false;
+      }
     });
   });
+
+function updateCafeCustomTime() {
+  const input = document.getElementById("cafeCustomMinutes");
+  const valid = isValidCustomMinutes(input);
+  document.getElementById("sizeNext").disabled = !valid;
+
+  if (valid) {
+    chosenMinutes = Number(input.value);
+  }
+}
+
+document.getElementById("cafeCustomMinutes").addEventListener("input", () => {
+  if (document.querySelector('.size-option[data-custom="true"]').classList.contains("selected")) {
+    updateCafeCustomTime();
+  }
+});
 
 // Continue From Duration Selection
 
 const sizeNext = document.getElementById("sizeNext");
 if (sizeNext) {
   sizeNext.addEventListener("click", () => {
+    const customSizeSelected = document.querySelector('.size-option[data-custom="true"]').classList.contains("selected");
+    if (customSizeSelected && !isValidCustomMinutes(document.getElementById("cafeCustomMinutes"))) {
+      document.getElementById("cafeCustomMinutes").focus();
+      return;
+    }
+
     let sizeName;
 
     if (chosenMinutes === 25) {
@@ -498,6 +808,8 @@ if (sizeNext) {
       sizeName = "GRANDE";
     } else if (chosenMinutes === 60) {
       sizeName = "VENTI";
+    } else if (customSizeSelected) {
+      sizeName = `YOUR OWN CUP · ${chosenMinutes} MIN`;
     } else {
       sizeName = "UNLIMITED";
     }

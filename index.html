@@ -59,16 +59,28 @@
             <span class="shop-badge">break</span>
           </button>
 
-          <button class="shop shop-jazz" type="button" data-shop="studio" aria-label="Enter the studio">
-            <span class="shop-sign">studio</span>
-            <span class="shop-window">
+          <button class="shop shop-garden" type="button" data-shop="garden" aria-label="Enter the garden">
+            <span class="shop-sign">garden</span>
+            <span class="shop-window garden-window">
               <span></span>
               <span></span>
               <span></span>
             </span>
             <span class="shop-door"><span class="door-knob"></span></span>
-            <span class="shop-badge">create</span>
+            <span class="shop-badge">breathe</span>
           </button>
+
+          <button class="shop shop-bakery" type="button" data-shop="bakery" aria-label="Enter the bakery">
+            <span class="shop-sign">bakery</span>
+            <span class="shop-window bakery-window">
+              <span></span>
+              <span></span>
+              <span></span>
+            </span>
+            <span class="shop-door"><span class="door-knob"></span></span>
+            <span class="shop-badge">treats</span>
+          </button>
+
         </div>
       </div>
 
@@ -109,10 +121,24 @@
             <small>books</small>
             <em>60 min</em>
           </button>
+
+          <button class="book-option custom-book-option" type="button" data-custom="true" aria-controls="libraryCustomTime" aria-expanded="false">
+            <span>✦</span>
+            <small>open reading</small>
+            <em>pick your own focus time!!</em>
+          </button>
+        </div>
+
+        <div class="custom-time-field" id="libraryCustomTime" hidden>
+          <label for="libraryCustomMinutes">Set your focus time</label>
+          <div class="custom-time-input">
+            <input id="libraryCustomMinutes" type="number" min="1" max="1440" step="1" value="30" inputmode="numeric">
+            <span>minutes</span>
+          </div>
         </div>
 
         <div class="library-summary" id="librarySummary">
-          1 book = 15 minutes of focused reading
+          1 book = 15 minutes of focus time
         </div>
 
         <button class="primary" id="libraryNext" type="button">start studying</button>
@@ -227,6 +253,24 @@
             <span>∞</span>
           </button>
 
+          <button
+            class="size-option"
+            data-custom="true"
+            aria-controls="cafeCustomTime"
+            aria-expanded="false"
+          >
+            <span>surprise size (custum)</span>
+            <i></i>
+          </button>
+
+        </div>
+
+        <div class="custom-time-field" id="cafeCustomTime" hidden>
+          <label for="cafeCustomMinutes">Brew your focus time</label>
+          <div class="custom-time-input">
+            <input id="cafeCustomMinutes" type="number" min="1" max="1440" step="1" value="30" inputmode="numeric">
+            <span>minutes</span>
+          </div>
         </div>
 
         <button class="primary" id="sizeNext">
@@ -540,6 +584,101 @@
           </div>
         </div>
 
+        <button class="back-link" data-back="welcome" type="button">← back to street</button>
+      </div>
+    </section>
+
+    <section id="garden" class="paper-screen screen hidden">
+      <div class="paper shop-visit-paper garden-paper">
+        <div class="mini-mark">🌿</div>
+        <h1>take a little garden break</h1>
+        <p class="shop-visit-intro">Choose a gentle reset for your mind and body.</p>
+
+        <div class="shop-choice-grid" id="gardenChoices" role="group" aria-label="Choose a garden break">
+          <button class="shop-choice selected" data-choice="breathe" type="button" aria-pressed="true">
+            <span class="shop-choice-icon">🌬️</span>
+            <span class="shop-choice-name">breathing timer</span>
+            <small>follow a gentle inhale and exhale</small>
+          </button>
+          <button class="shop-choice" data-choice="stretch" type="button" aria-pressed="false">
+            <span class="shop-choice-icon">🙆</span>
+            <span class="shop-choice-name">gentle stretch</span>
+            <small>unwind your shoulders</small>
+          </button>
+          <button class="shop-choice" data-choice="outside" type="button" aria-pressed="false">
+            <span class="shop-choice-icon">🌼</span>
+            <span class="shop-choice-name">notice nature</span>
+            <small>try a nature sidequest</small>
+          </button>
+        </div>
+
+        <p class="shop-choice-message" id="gardenMessage" aria-live="polite">Breathe in slowly, then let it go. Repeat three times.</p>
+        <button class="back-link" data-back="welcome" type="button">← back to street</button>
+      </div>
+    </section>
+
+    <section id="breathing" class="paper-screen screen hidden">
+      <div class="paper shop-visit-paper breathing-paper">
+        <div class="mini-mark">🌿</div>
+        <h1>a little breathing break</h1>
+        <p class="shop-visit-intro">Follow the garden orb for three gentle breaths.</p>
+
+        <div class="breathing-orb-wrap" aria-hidden="true">
+          <div class="breathing-orb" id="breathingOrb">
+            <span>✿</span>
+          </div>
+          <span class="breathing-sparkle sparkle-one">✦</span>
+          <span class="breathing-sparkle sparkle-two">✧</span>
+          <span class="breathing-sparkle sparkle-three">✿</span>
+        </div>
+
+        <p class="breathing-phase" id="breathingPhase" aria-live="polite">breathe in</p>
+        <p class="breathing-countdown" id="breathingCountdown" aria-label="Seconds remaining">4</p>
+        <p class="breathing-round" id="breathingRound">breath 1 of 3</p>
+        <div class="breathing-actions">
+          <button class="primary" id="breathingPause" type="button">pause</button>
+          <button class="back-link" id="breathingBack" data-back="garden" type="button">← back to garden</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="sidequests" class="paper-screen screen hidden">
+      <div class="paper shop-visit-paper sidequests-paper">
+        <div class="mini-mark">🌱</div>
+        <h1>nature sidequests</h1>
+        <p class="shop-visit-intro">Pick any little quest. Leave plants, rocks, and wildlife just as you found them.</p>
+
+        <ul class="sidequest-list" id="sidequestList" aria-label="Nature sidequests"></ul>
+        <button class="primary" id="newSidequests" type="button">new sidequests</button>
+        <button class="back-link" data-back="garden" type="button">← back to garden</button>
+      </div>
+    </section>
+
+    <section id="bakery" class="paper-screen screen hidden">
+      <div class="paper shop-visit-paper bakery-paper">
+        <div class="mini-mark">🥐</div>
+        <h1>something sweet for the road?</h1>
+        <p class="shop-visit-intro">Pick a little treat to celebrate showing up.</p>
+
+        <div class="shop-choice-grid" id="bakeryChoices" role="group" aria-label="Choose a bakery treat">
+          <button class="shop-choice selected" data-choice="croissant" type="button" aria-pressed="true">
+            <span class="shop-choice-icon">🥐</span>
+            <span class="shop-choice-name">buttery croissant</span>
+            <small>flaky and golden</small>
+          </button>
+          <button class="shop-choice" data-choice="cookie" type="button" aria-pressed="false">
+            <span class="shop-choice-icon">🍪</span>
+            <span class="shop-choice-name">chocolate cookie</span>
+            <small>a classic little treat</small>
+          </button>
+          <button class="shop-choice" data-choice="muffin" type="button" aria-pressed="false">
+            <span class="shop-choice-icon">🧁</span>
+            <span class="shop-choice-name">berry muffin</span>
+            <small>soft with a fruity twist</small>
+          </button>
+        </div>
+
+        <p class="shop-choice-message" id="bakeryMessage" aria-live="polite">A buttery croissant sounds lovely.</p>
         <button class="back-link" data-back="welcome" type="button">← back to street</button>
       </div>
     </section>
