@@ -187,7 +187,7 @@ body[data-time-of-day="night"] .round-arrow {
 
 .street-header {
   position: absolute;
-  top: 7%;
+  top: 15%;
   left: 50%;
   transform: translateX(-50%);
   z-index: 3;
@@ -391,7 +391,7 @@ body[data-time-of-day="night"] .round-arrow {
 
 .audio-note {
   position: absolute;
-  top: 8%;
+  top: 4%;
   left: 50%;
 
   transform: translateX(-50%);
@@ -1125,6 +1125,59 @@ h1 {
   font-size: clamp(140px, 20vw, 270px);
 
   filter: sepia(.2);
+}
+
+.focus-screen.library-session .coffee-hanger,
+.focus-screen.library-session .steam-stack {
+  display: none;
+}
+
+.focus-drink.books-display {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: min(70vw, 500px);
+  height: clamp(120px, 18vw, 190px);
+  font-size: initial;
+  filter: none;
+}
+
+.focus-book {
+  position: relative;
+  flex: 0 0 clamp(42px, 7vw, 76px);
+  height: clamp(78px, 11vw, 118px);
+  margin-left: clamp(-12px, -1.5vw, -5px);
+  border: 3px solid #49372b;
+  border-radius: 4px 7px 7px 4px;
+  background: linear-gradient(90deg, #714b39 0 17%, #b96c52 17% 100%);
+  box-shadow: 3px 4px 0 #0002;
+  transform: rotate(-7deg);
+}
+
+.focus-book:first-child {
+  margin-left: 0;
+  transform: rotate(6deg);
+}
+
+.focus-book:nth-child(3n + 2) {
+  height: clamp(88px, 12vw, 128px);
+  background: linear-gradient(90deg, #415d4c 0 17%, #769276 17% 100%);
+  transform: rotate(3deg);
+}
+
+.focus-book:nth-child(3n) {
+  background: linear-gradient(90deg, #4a526e 0 17%, #8589a7 17% 100%);
+  transform: rotate(-3deg);
+}
+
+.focus-book::after {
+  position: absolute;
+  right: 12%;
+  bottom: 22%;
+  left: 28%;
+  height: 2px;
+  background: #e6c88c;
+  content: "";
 }
 
 .round-arrow {

@@ -13,6 +13,8 @@ const screens = [
 let current = "welcome";
 let chosenDrink = "matcha";
 let chosenMinutes = 25;
+let chosenBooks = 1;
+let sessionType = "cafe";
 let remaining = 25 * 60;
 let timerInterval = null;
 let paused = false;
@@ -109,6 +111,37 @@ function syncDrinkDisplay() {
   }
 }
 
+function syncFocusTableDisplay() {
+  const focusDrink = document.getElementById("focusDrink");
+  const focusScreen = document.getElementById("focus");
+  if (!focusDrink || !focusScreen) {
+    return;
+  }
+
+  const isLibrarySession = sessionType === "library";
+  focusScreen.classList.toggle("library-session", isLibrarySession);
+  focusDrink.classList.toggle("books-display", isLibrarySession);
+  focusDrink.replaceChildren();
+
+  if (isLibrarySession) {
+    for (let index = 0; index < chosenBooks; index++) {
+      const book = document.createElement("span");
+      book.className = "focus-book";
+      book.setAttribute("aria-hidden", "true");
+      focusDrink.append(book);
+    }
+
+    focusDrink.setAttribute(
+      "aria-label",
+      `${chosenBooks} book${chosenBooks === 1 ? "" : "s"}`
+    );
+    return;
+  }
+
+  focusDrink.textContent = drinkEmoji[chosenDrink] || drinkEmoji.matcha;
+  focusDrink.setAttribute("aria-label", `${chosenDrink} drink`);
+}
+
 function setDrink(drink) {
   chosenDrink = drink;
 
@@ -163,7 +196,7 @@ function startTimer() {
 
   const pauseBtn = document.getElementById("pauseBtn");
   if (pauseBtn) {
-    pauseBtn.textContent = "Ⅱ";
+    pauseBtn.textContent = "ll";
   }
 
   if (chosenMinutes === 0) {
@@ -375,6 +408,7 @@ function updateLibrarySelection(button) {
   });
 
   chosenMinutes = minutes;
+  chosenBooks = books;
   remaining = minutes * 60;
   updateTime();
 
@@ -399,6 +433,8 @@ if (libraryNext) {
     const minutes = Number(selectedBooks?.dataset.minutes || 15);
 
     chosenMinutes = minutes;
+    chosenBooks = books;
+    sessionType = "library";
     remaining = minutes * 60;
     updateTime();
 
@@ -427,6 +463,7 @@ if (drinkNext) {
       return;
     }
 
+    sessionType = "cafe";
     document.getElementById("chosenArt").textContent = drinkEmoji[chosenDrink];
     show("size");
   });
@@ -518,7 +555,7 @@ if (startBtn) {
     const tasks = collectTasks();
 
     document.getElementById("goalName").value = name;
-    document.getElementById("focusDrink").textContent = drinkEmoji[chosenDrink];
+    syncFocusTableDisplay();
 
     updateTaskDisplay();
 
