@@ -166,7 +166,9 @@
           </button>
 
           <button class="drink" data-drink="matcha">
-            <span class="drink-art green">🥤</span>
+            <span class="drink-art green">
+              <img src="matcha.png" alt="matcha" class="drink-asset" />
+            </span>
             <span>matcha</span>
           </button>
 
@@ -176,17 +178,23 @@
           </button>
 
           <button class="drink" data-drink="latte">
-            <span class="drink-art cream">🥛</span>
+            <span class="drink-art cream">
+              <img src="latte.png" alt="latte" class="drink-asset" />
+            </span>
             <span>latte</span>
           </button>
 
           <button class="drink" data-drink="mocha">
-            <span class="drink-art brown">🍵</span>
-            <span>mocha</span>
+            <span class="drink-art brown">
+              <img src="coffeejelly.png" alt="coffee jelly" class="drink-asset" />
+            </span>
+            <span>coffee jelly</span>
           </button>
 
           <button class="drink" data-drink="black tea">
-            <span class="drink-art tea">🧋</span>
+            <span class="drink-art tea">
+              <img src="boba.png" alt="boba" class="drink-asset" />
+            </span>
             <span>boba</span>
           </button>
 
@@ -212,7 +220,7 @@
       <div class="paper size-paper">
 
         <div class="chosen-art" id="chosenArt">
-          🥤
+          <img src="matcha.png" alt="matcha" class="drink-asset" />
         </div>
 
         <div class="sizes">
@@ -280,6 +288,7 @@
         <button
           class="back-link"
           data-back="order"
+          id="sizeBack"
         >
           ← back
         </button>
@@ -297,7 +306,7 @@
 
         <div class="receipt">
 
-          <small>DRINK FOR</small>
+          <small id="receiptHeading">DRINK FOR</small>
 
           <input
             id="nameInput"
@@ -328,15 +337,6 @@
             <input id="taskMainInput" maxlength="42" placeholder="Finish the draft" />
           </label>
 
-          <label class="task-row">
-            <span>bonus task</span>
-            <input id="taskBonusInput" maxlength="42" placeholder="Review notes" />
-          </label>
-
-          <label class="task-row">
-            <span>extra win</span>
-            <input id="taskExtraInput" maxlength="42" placeholder="Prep tomorrow" />
-          </label>
         </div>
 
         <button class="primary" id="startBtn">
@@ -426,23 +426,6 @@
 
       </div>
 
-      <div class="focus-tasks" aria-live="polite">
-        <div class="focus-task">
-          <span>main</span>
-          <strong id="taskMainDisplay">finish the draft</strong>
-        </div>
-
-        <div class="focus-task">
-          <span>bonus</span>
-          <strong id="taskBonusDisplay">review notes</strong>
-        </div>
-
-        <div class="focus-task">
-          <span>extra</span>
-          <strong id="taskExtraDisplay">prep tomorrow</strong>
-        </div>
-      </div>
-
       <div class="table-curve">
         <div class="steam-stack" aria-hidden="true">
           <span class="steam s1"></span>
@@ -451,7 +434,7 @@
         </div>
 
         <div class="focus-drink" id="focusDrink" role="img" aria-label="matcha drink">
-          🥤
+          <img src="matcha.png" alt="matcha drink" class="drink-asset" />
         </div>
       </div>
 
@@ -655,30 +638,28 @@
     </section>
 
     <section id="bakery" class="paper-screen screen hidden">
-      <div class="paper shop-visit-paper bakery-paper">
+      <div class="paper">
         <div class="mini-mark">🥐</div>
-        <h1>something sweet for the road?</h1>
-        <p class="shop-visit-intro">Pick a little treat to celebrate showing up.</p>
+        <h1>what treat would you like?</h1>
 
-        <div class="shop-choice-grid" id="bakeryChoices" role="group" aria-label="Choose a bakery treat">
-          <button class="shop-choice selected" data-choice="croissant" type="button" aria-pressed="true">
-            <span class="shop-choice-icon">🥐</span>
-            <span class="shop-choice-name">buttery croissant</span>
-            <small>flaky and golden</small>
+        <div class="drink-grid" id="bakeryTreatGrid">
+          <button class="drink bakery-treat selected" data-treat="croissant" type="button">
+            <span class="drink-art red">🥐</span>
+            <span>croissant</span>
           </button>
-          <button class="shop-choice" data-choice="cookie" type="button" aria-pressed="false">
-            <span class="shop-choice-icon">🍪</span>
-            <span class="shop-choice-name">chocolate cookie</span>
-            <small>a classic little treat</small>
+
+          <button class="drink bakery-treat" data-treat="cookie" type="button">
+            <span class="drink-art brown">🍪</span>
+            <span>cookie</span>
           </button>
-          <button class="shop-choice" data-choice="muffin" type="button" aria-pressed="false">
-            <span class="shop-choice-icon">🧁</span>
-            <span class="shop-choice-name">berry muffin</span>
-            <small>soft with a fruity twist</small>
+
+          <button class="drink bakery-treat" data-treat="muffin" type="button">
+            <span class="drink-art cream">🧁</span>
+            <span>muffin</span>
           </button>
         </div>
 
-        <p class="shop-choice-message" id="bakeryMessage" aria-live="polite">A buttery croissant sounds lovely.</p>
+        <button class="primary" id="bakeryNext" type="button">next</button>
         <button class="back-link" data-back="welcome" type="button">← back to street</button>
       </div>
     </section>

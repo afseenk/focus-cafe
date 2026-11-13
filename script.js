@@ -16,6 +16,7 @@ const screens = [
 
 let current = "welcome";
 let chosenDrink = "matcha";
+let chosenTreat = "croissant";
 let chosenMinutes = 25;
 let chosenBooks = 1;
 let sessionType = "cafe";
@@ -47,13 +48,53 @@ let cafeProfile = {
 
 const drinkEmoji = {
   americano: "☕",
-  matcha: "🥤",
+  matcha: "matcha",
   cappuccino: "☕",
-  latte: "🥛",
-  mocha: "🍵",
-  "black tea": "🧋",
-  boba: "🧋"
+  latte: "latte",
+  mocha: "coffee jelly",
+  "black tea": "boba",
+  boba: "boba",
+  "coffee jelly": "coffee jelly"
 };
+
+const drinkImages = {
+  matcha: "matcha.png",
+  latte: "latte.png",
+  mocha: "coffeejelly.png",
+  "coffee jelly": "coffeejelly.png",
+  "black tea": "boba.png",
+  boba: "boba.png"
+};
+
+const bakeryTreats = {
+  croissant: "🥐",
+  cookie: "🍪",
+  muffin: "🧁"
+};
+
+function createDrinkAsset(drinkName) {
+  const key = drinkName || "matcha";
+  const icon = drinkEmoji[key] || drinkEmoji.matcha;
+  const imagePath = drinkImages[key] || drinkImages.matcha;
+
+  if (drinkImages[key] || drinkImages[drinkEmoji[key]]) {
+    const image = document.createElement("img");
+    image.src = imagePath;
+    image.alt = key;
+    image.className = "drink-asset";
+    return image;
+  }
+
+  return document.createTextNode(icon);
+}
+
+function createTreatAsset(treatName) {
+  return document.createTextNode(bakeryTreats[treatName] || bakeryTreats.croissant);
+}
+
+function getSelectionScreen() {
+  return sessionType === "bakery" ? "bakery" : "order";
+}
 
 const profileKey = "focusCafeProfile";
 
@@ -107,16 +148,17 @@ function applyTimeOfDayTheme() {
 }
 
 function syncDrinkDisplay() {
-  const drinkIcon = drinkEmoji[chosenDrink] || drinkEmoji.matcha;
-
+  const asset = sessionType === "bakery"
+    ? createTreatAsset(chosenTreat)
+    : createDrinkAsset(chosenDrink);
   const chosenArt = document.getElementById("chosenArt");
   if (chosenArt) {
-    chosenArt.textContent = drinkIcon;
+    chosenArt.replaceChildren(asset.cloneNode(true));
   }
 
   const focusDrink = document.getElementById("focusDrink");
   if (focusDrink) {
-    focusDrink.textContent = drinkIcon;
+    focusDrink.replaceChildren(asset);
   }
 }
 
@@ -130,6 +172,7 @@ function syncFocusTableDisplay() {
   const isLibrarySession = sessionType === "library";
   focusScreen.classList.toggle("library-session", isLibrarySession);
   focusDrink.classList.toggle("books-display", isLibrarySession);
+  focusDrink.classList.toggle("bakery-display", sessionType === "bakery");
   focusDrink.replaceChildren();
 
   if (isLibrarySession) {
@@ -147,7 +190,19 @@ function syncFocusTableDisplay() {
     return;
   }
 
-  focusDrink.textContent = drinkEmoji[chosenDrink] || drinkEmoji.matcha;
+  const changeDrinkButton = document.getElementById("changeDrink");
+  if (changeDrinkButton) {
+    changeDrinkButton.textContent = sessionType === "bakery" ? "🥐" : "☕";
+    changeDrinkButton.title = sessionType === "bakery" ? "Change treat" : "Change drink";
+  }
+
+  if (sessionType === "bakery") {
+    focusDrink.replaceChildren(createTreatAsset(chosenTreat));
+    focusDrink.setAttribute("aria-label", `${chosenTreat} treat`);
+    return;
+  }
+
+  focusDrink.replaceChildren(createDrinkAsset(chosenDrink));
   focusDrink.setAttribute("aria-label", `${chosenDrink} drink`);
 }
 
@@ -155,7 +210,7 @@ function setDrink(drink) {
   chosenDrink = drink;
 
   document
-    .querySelectorAll(".drink")
+    .querySelectorAll("#drinkGrid .drink")
     .forEach(button => {
       button.classList.toggle(
         "selected",
@@ -170,6 +225,16 @@ function setDrink(drink) {
     drinkNext.disabled = false;
     drinkNext.textContent = "next";
   }
+}
+
+function setTreat(treat) {
+  chosenTreat = treat;
+
+  document.querySelectorAll(".bakery-treat").forEach(button => {
+    button.classList.toggle("selected", button.dataset.treat === treat);
+  });
+
+  syncDrinkDisplay();
 }
 
 function updateTime() {
@@ -239,39 +304,14 @@ function show(id) {
   current = id;
 }
 
-function collectTasks() {
-  const tasks = [
-    document.getElementById("taskMainInput")?.value.trim() || "",
-    document.getElementById("taskBonusInput")?.value.trim() || "",
-    document.getElementById("taskExtraInput")?.value.trim() || ""
-  ].filter(Boolean);
-
-  return tasks.length
-    ? tasks
-    : ["finish the draft", "review notes", "prep tomorrow"];
+function getMainTask() {
+  return document.getElementById("taskMainInput")?.value.trim() || "finish the draft";
 }
 
 function updateTaskDisplay() {
-  const tasks = collectTasks();
-  const main = document.getElementById("taskMainDisplay");
-  const bonus = document.getElementById("taskBonusDisplay");
-  const extra = document.getElementById("taskExtraDisplay");
-
-  if (main) {
-    main.textContent = tasks[0] || "finish the draft";
-  }
-
-  if (bonus) {
-    bonus.textContent = tasks[1] || "review notes";
-  }
-
-  if (extra) {
-    extra.textContent = tasks[2] || "prep tomorrow";
-  }
-
   const goalInput = document.getElementById("goalInput");
   if (goalInput) {
-    goalInput.value = tasks[0] || "write your goal";
+    goalInput.value = getMainTask();
   }
 }
 
@@ -347,9 +387,13 @@ function resetSessionFlow() {
     "1 book = 15 minutes of focused reading";
   document.getElementById("libraryNext").disabled = false;
 
-  const drinkButtons = document.querySelectorAll(".drink");
+  const drinkButtons = document.querySelectorAll("#drinkGrid .drink");
   drinkButtons.forEach(button => {
     button.classList.toggle("selected", button.dataset.drink === chosenDrink);
+  });
+
+  document.querySelectorAll(".bakery-treat").forEach(button => {
+    button.classList.toggle("selected", button.dataset.treat === chosenTreat);
   });
 
   const drinkNext = document.getElementById("drinkNext");
@@ -377,6 +421,15 @@ function openShop(shopName) {
     garden: "garden",
     bakery: "bakery"
   };
+
+  if (shopName === "cafe") {
+    sessionType = "cafe";
+    document.getElementById("sizeBack").dataset.back = "order";
+  } else if (shopName === "bakery") {
+    sessionType = "bakery";
+    document.getElementById("sizeBack").dataset.back = "bakery";
+    setTreat(chosenTreat);
+  }
 
   const target = destinations[shopName] || "welcome";
   show(target);
@@ -416,33 +469,6 @@ const gardenMessages = {
   stretch: "Roll your shoulders gently, then reach up and stretch."
 };
 
-const bakeryMessages = {
-  croissant: "A buttery croissant sounds lovely.",
-  cookie: "A chocolate cookie is a sweet little reward.",
-  muffin: "A berry muffin is ready for your break."
-};
-
-function setupShopChoices(groupId, messageId, messages) {
-  const group = document.getElementById(groupId);
-  const message = document.getElementById(messageId);
-
-  if (!group || !message) {
-    return;
-  }
-
-  group.querySelectorAll(".shop-choice").forEach(button => {
-    button.addEventListener("click", () => {
-      group.querySelectorAll(".shop-choice").forEach(choice => {
-        const selected = choice === button;
-        choice.classList.toggle("selected", selected);
-        choice.setAttribute("aria-pressed", String(selected));
-      });
-
-      message.textContent = messages[button.dataset.choice];
-    });
-  });
-}
-
 const gardenChoices = document.getElementById("gardenChoices");
 if (gardenChoices) {
   gardenChoices.querySelectorAll(".shop-choice").forEach(button => {
@@ -467,8 +493,6 @@ if (gardenChoices) {
     });
   });
 }
-
-setupShopChoices("bakeryChoices", "bakeryMessage", bakeryMessages);
 
 function updateBreathingDisplay() {
   const phase = document.getElementById("breathingPhase");
@@ -717,6 +741,7 @@ if (libraryNext) {
     document.getElementById("receiptDrink").textContent = isCustom
       ? `OPEN READING · ${minutes} MIN`
       : `${books} BOOK${books > 1 ? "S" : ""}`;
+    document.getElementById("receiptHeading").textContent = "READING FOR";
     document.getElementById("orderNumber").textContent = orderNo;
     show("name");
   });
@@ -725,12 +750,18 @@ if (libraryNext) {
 // Drink Selection
 
 document
-  .querySelectorAll(".drink")
+  .querySelectorAll("#drinkGrid .drink")
   .forEach(button => {
     button.addEventListener("click", () => {
       setDrink(button.dataset.drink);
     });
   });
+
+document.querySelectorAll(".bakery-treat").forEach(button => {
+  button.addEventListener("click", () => {
+    setTreat(button.dataset.treat);
+  });
+});
 
 // Continue From Drink Selection
 
@@ -742,7 +773,23 @@ if (drinkNext) {
     }
 
     sessionType = "cafe";
-    document.getElementById("chosenArt").textContent = drinkEmoji[chosenDrink];
+    const chosenArt = document.getElementById("chosenArt");
+    if (chosenArt) {
+      chosenArt.replaceChildren(createDrinkAsset(chosenDrink));
+    }
+    show("size");
+  });
+}
+
+const bakeryNext = document.getElementById("bakeryNext");
+if (bakeryNext) {
+  bakeryNext.addEventListener("click", () => {
+    sessionType = "bakery";
+    document.getElementById("sizeBack").dataset.back = "bakery";
+    const chosenArt = document.getElementById("chosenArt");
+    if (chosenArt) {
+      chosenArt.replaceChildren(createTreatAsset(chosenTreat));
+    }
     show("size");
   });
 }
@@ -814,8 +861,11 @@ if (sizeNext) {
       sizeName = "UNLIMITED";
     }
 
-    document.getElementById("receiptDrink").textContent =
-      `1X ${sizeName} ${chosenDrink.toUpperCase()}`;
+    document.getElementById("receiptHeading").textContent =
+      sessionType === "bakery" ? "TREAT FOR" : "DRINK FOR";
+    document.getElementById("receiptDrink").textContent = sessionType === "bakery"
+      ? `${chosenTreat.toUpperCase()} · ${sizeName}`
+      : `1X ${sizeName} ${chosenDrink.toUpperCase()}`;
 
     document.getElementById("orderNumber").textContent = orderNo;
 
@@ -864,7 +914,6 @@ const startBtn = document.getElementById("startBtn");
 if (startBtn) {
   startBtn.addEventListener("click", () => {
     const name = document.getElementById("nameInput").value.trim() || "friend";
-    const tasks = collectTasks();
 
     document.getElementById("goalName").value = name;
     syncFocusTableDisplay();
@@ -927,7 +976,7 @@ const nextBtn = document.getElementById("nextBtn");
 if (nextBtn) {
   nextBtn.addEventListener("click", () => {
     stopTimer();
-    show("order");
+    show(getSelectionScreen());
   });
 }
 
@@ -937,7 +986,7 @@ const changeDrinkBtn = document.getElementById("changeDrink");
 if (changeDrinkBtn) {
   changeDrinkBtn.addEventListener("click", () => {
     stopTimer();
-    show("order");
+    show(getSelectionScreen());
   });
 }
 
@@ -959,7 +1008,7 @@ const rewardBack = document.getElementById("rewardBack");
 if (rewardBack) {
   rewardBack.addEventListener("click", () => {
     resetSessionFlow();
-    show("order");
+    show(getSelectionScreen());
   });
 }
 
@@ -975,7 +1024,7 @@ document.querySelectorAll(".reward-option").forEach(button => {
     button.textContent = `${chosen} ✓`;
     setTimeout(() => {
       resetSessionFlow();
-      show("order");
+      show(getSelectionScreen());
     }, 300);
   });
 });
