@@ -169,6 +169,7 @@ body[data-time-of-day="night"] .round-arrow {
 .ground {
   position: absolute;
   bottom: 0;
+  z-index: 2;
 
   height: 16%;
   width: 100%;
@@ -216,6 +217,7 @@ body[data-time-of-day="night"] .round-arrow {
 
 .street-scene {
   position: absolute;
+  z-index: 1;
   inset: 18% 2% 13%;
   overflow-x: auto;
   overflow-y: hidden;
@@ -375,6 +377,48 @@ body[data-time-of-day="night"] .round-arrow {
 
 .shop-library {
   background: linear-gradient(180deg, #dfeeff, #b1caee 42%, #7f9fca 100%);
+}
+
+.shop.shop-image-card {
+  flex: 0 0 clamp(300px, 38vw, 420px);
+  height: 100%;
+  min-height: 0;
+  top: 24px;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.shop-image-card:first-child {
+  margin-left: -80px;
+}
+
+.shop-image-card + .shop-image-card {
+  margin-left: -72px;
+}
+
+.shop-cafe.shop-image-card,
+.shop-library.shop-image-card {
+  top: 44px;
+}
+
+.shop.shop-image-card::before {
+  content: none;
+}
+
+.shop-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.shop.shop-image-card:hover,
+.shop.shop-image-card:focus-visible {
+  box-shadow: none;
 }
 
 .shop-arcade {
