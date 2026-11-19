@@ -19,11 +19,25 @@
       </div>
       <div class="street-scene" id="streetScroll" aria-label="Shops along the street">
         <div class="street-strip">
-          <button class="shop shop-cafe shop-image-card" type="button" data-shop="cafe" aria-label="Enter the cafe">
-            <img class="shop-image" src="coffeeshop.png" alt="" />
+          <button class="shop shop-cafe" type="button" data-shop="cafe" aria-label="Enter the cafe">
+            <span class="shop-sign">cafe</span>
+            <span class="shop-window cafe-window">
+              <span></span>
+              <span></span>
+              <span></span>
+            </span>
+            <span class="shop-door"><span class="door-knob"></span></span>
+            <span class="shop-badge">coffee</span>
           </button>
-          <button class="shop shop-library shop-image-card" type="button" data-shop="library" aria-label="Enter the library">
-            <img class="shop-image" src="library.png" alt="" />
+          <button class="shop shop-library" type="button" data-shop="library" aria-label="Enter the library">
+            <span class="shop-sign">library</span>
+            <span class="shop-window library-window">
+              <span></span>
+              <span></span>
+              <span></span>
+            </span>
+            <span class="shop-door"><span class="door-knob"></span></span>
+            <span class="shop-badge">books</span>
           </button>
           <button class="shop shop-arcade" type="button" data-shop="arcade" aria-label="Enter the arcade">
             <span class="shop-sign">arcade</span>
@@ -34,26 +48,6 @@
             </span>
             <span class="shop-door"><span class="door-knob"></span></span>
             <span class="shop-badge">break</span>
-          </button>
-          <button class="shop shop-garden" type="button" data-shop="garden" aria-label="Enter the garden">
-            <span class="shop-sign">garden</span>
-            <span class="shop-window garden-window">
-              <span></span>
-              <span></span>
-              <span></span>
-            </span>
-            <span class="shop-door"><span class="door-knob"></span></span>
-            <span class="shop-badge">breathe</span>
-          </button>
-          <button class="shop shop-bakery" type="button" data-shop="bakery" aria-label="Enter the bakery">
-            <span class="shop-sign">bakery</span>
-            <span class="shop-window bakery-window">
-              <span></span>
-              <span></span>
-              <span></span>
-            </span>
-            <span class="shop-door"><span class="door-knob"></span></span>
-            <span class="shop-badge">treats</span>
           </button>
         </div>
       </div>
@@ -86,18 +80,6 @@
             <small>books</small>
             <em>60 min</em>
           </button>
-          <button class="book-option custom-book-option" type="button" data-custom="true" aria-controls="libraryCustomTime" aria-expanded="false">
-            <span>✦</span>
-            <small>open reading</small>
-            <em>pick your own focus time!!</em>
-          </button>
-        </div>
-        <div class="custom-time-field" id="libraryCustomTime" hidden>
-          <label for="libraryCustomMinutes">Set your focus time</label>
-          <div class="custom-time-input">
-            <input id="libraryCustomMinutes" type="number" min="1" max="1440" step="1" value="30" inputmode="numeric">
-            <span>minutes</span>
-          </div>
         </div>
         <div class="library-summary" id="librarySummary">
           1 book = 15 minutes of focus time
@@ -289,20 +271,6 @@
       class="focus-screen screen hidden"
     >
       <button
-        class="hanging coffee-hanger"
-        id="changeDrink"
-        title="Change drink"
-      >
-        ☕
-      </button>
-      <button
-        class="hanging profile-hanger"
-        id="profileBtn"
-        title="Your café profile"
-      >
-        ✦
-      </button>
-      <button
         class="focus-label"
         id="focusMode"
       >
@@ -334,20 +302,6 @@
           <img src="matcha.png" alt="matcha drink" class="drink-asset" />
         </div>
       </div>
-      <button
-        class="round-arrow left"
-        id="prevBtn"
-        aria-label="Previous screen"
-      >
-        ←
-      </button>
-      <button
-        class="round-arrow right"
-        id="nextBtn"
-        aria-label="Next screen"
-      >
-        →
-      </button>
       <div class="timer-controls">
         <button
           id="pauseBtn"

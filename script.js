@@ -162,11 +162,6 @@ function syncFocusTableDisplay() {
     );
     return;
   }
-  const changeDrinkButton = document.getElementById("changeDrink");
-  if (changeDrinkButton) {
-    changeDrinkButton.textContent = sessionType === "bakery" ? "🥐" : "☕";
-    changeDrinkButton.title = sessionType === "bakery" ? "Change treat" : "Change drink";
-  }
   if (sessionType === "bakery") {
     focusDrink.replaceChildren(createTreatAsset(chosenTreat));
     focusDrink.setAttribute("aria-label", `${chosenTreat} treat`);
@@ -180,10 +175,9 @@ function setDrink(drink) {
   document
     .querySelectorAll("#drinkGrid .drink")
     .forEach(button => {
-      button.classList.toggle(
-        "selected",
-        button.dataset.drink === drink
-      );
+      const selected = button.dataset.drink === drink;
+      button.classList.toggle("selected", selected);
+      button.setAttribute("aria-pressed", selected ? "true" : "false");
     });
   syncDrinkDisplay();
   const drinkNext = document.getElementById("drinkNext");
@@ -318,8 +312,6 @@ function resetSessionFlow() {
     option.classList.toggle("selected", index === 0);
     option.setAttribute("aria-expanded", "false");
   });
-  document.getElementById("libraryCustomTime").hidden = true;
-  document.getElementById("libraryCustomMinutes").value = "30";
   document.getElementById("librarySummary").textContent =
     "1 book = 15 minutes of focused reading";
   document.getElementById("libraryNext").disabled = false;
@@ -555,46 +547,9 @@ function isValidCustomMinutes(input) {
     minutes >= Number(input.min) &&
     minutes <= Number(input.max);
 }
-const libraryCustomTime = document.getElementById("libraryCustomTime");
-const libraryCustomMinutes = document.getElementById("libraryCustomMinutes");
-const libraryCustomOption = document.querySelector('.book-option[data-custom="true"]');
-function updateLibraryCustomTime() {
-  const valid = isValidCustomMinutes(libraryCustomMinutes);
-  libraryNext.disabled = !valid;
-  if (valid) {
-    chosenMinutes = Number(libraryCustomMinutes.value);
-    remaining = chosenMinutes * 60;
-    updateTime();
-    librarySummary.textContent = `Your open reading session = ${chosenMinutes} minutes`;
-  } else {
-    librarySummary.textContent = "Enter a whole number from 1 to 1,440 minutes";
-  }
-}
-if (libraryCustomOption) {
-  libraryCustomOption.addEventListener("click", () => {
-    libraryButtons.forEach(option => {
-      option.classList.toggle("selected", option === libraryCustomOption);
-      option.setAttribute("aria-expanded", String(option === libraryCustomOption));
-    });
-    libraryCustomTime.hidden = false;
-    chosenBooks = 1;
-    libraryNext.disabled = false;
-    updateLibraryCustomTime();
-    libraryCustomMinutes.focus();
-  });
-}
-libraryCustomMinutes.addEventListener("input", () => {
-  if (libraryCustomOption.classList.contains("selected")) {
-    updateLibraryCustomTime();
-  }
-});
 if (libraryButtons.length) {
   libraryButtons.forEach(button => {
-    if (button === libraryCustomOption) {
-      return;
-    }
     button.addEventListener("click", () => {
-      libraryCustomTime.hidden = true;
       libraryNext.disabled = false;
       libraryButtons.forEach(option => option.setAttribute("aria-expanded", "false"));
       updateLibrarySelection(button);
@@ -605,15 +560,8 @@ const libraryNext = document.getElementById("libraryNext");
 if (libraryNext) {
   libraryNext.addEventListener("click", () => {
     const selectedBooks = document.querySelector(".book-option.selected");
-    const isCustom = selectedBooks?.dataset.custom === "true";
-    if (isCustom && !isValidCustomMinutes(libraryCustomMinutes)) {
-      libraryCustomMinutes.focus();
-      return;
-    }
-    const books = isCustom ? 1 : Number(selectedBooks?.dataset.books || 1);
-    const minutes = isCustom
-      ? Number(libraryCustomMinutes.value)
-      : Number(selectedBooks?.dataset.minutes || 15);
+    const books = Number(selectedBooks?.dataset.books || 1);
+    const minutes = Number(selectedBooks?.dataset.minutes || 15);
     chosenMinutes = minutes;
     chosenBooks = books;
     sessionType = "library";
@@ -746,13 +694,6 @@ if (saveProfileBtn) {
     show("welcome");
   });
 }
-const profileBtn = document.getElementById("profileBtn");
-if (profileBtn) {
-  profileBtn.addEventListener("click", () => {
-    applyProfileToUI();
-    show("profile");
-  });
-}
 const startBtn = document.getElementById("startBtn");
 if (startBtn) {
   startBtn.addEventListener("click", () => {
@@ -787,27 +728,6 @@ if (resetBtn) {
     if (chosenMinutes === 0) {
       document.getElementById("timer").textContent = "∞";
     }
-  });
-}
-const prevBtn = document.getElementById("prevBtn");
-if (prevBtn) {
-  prevBtn.addEventListener("click", () => {
-    stopTimer();
-    show("name");
-  });
-}
-const nextBtn = document.getElementById("nextBtn");
-if (nextBtn) {
-  nextBtn.addEventListener("click", () => {
-    stopTimer();
-    show(getSelectionScreen());
-  });
-}
-const changeDrinkBtn = document.getElementById("changeDrink");
-if (changeDrinkBtn) {
-  changeDrinkBtn.addEventListener("click", () => {
-    stopTimer();
-    show(getSelectionScreen());
   });
 }
 const focusMode = document.getElementById("focusMode");

@@ -10,7 +10,7 @@
 }
 body {
   margin: 0;
-  background: var(--bg);
+  background: #fff;
   color: var(--ink);
   font-family: "DM Sans", Arial, sans-serif;
 }
@@ -23,54 +23,37 @@ button {
   cursor: pointer;
 }
 body[data-time-of-day="morning"] .welcome {
-  background: #b9d8ec;
+  background: #fff;
 }
 body[data-time-of-day="morning"] .sky {
-  background:
-    radial-gradient(ellipse at 22% 35%, #fff 0 8%, transparent 9%),
-    radial-gradient(ellipse at 72% 25%, #fff 0 12%, transparent 13%),
-    radial-gradient(ellipse at 90% 52%, #fff 0 10%, transparent 11%),
-    linear-gradient(130deg, #7ea6dd, #dfeaf7 58%, #7aa4dc);
+  display: none;
 }
 body[data-time-of-day="afternoon"] .welcome {
-  background: #d9ebf9;
+  background: #fff;
 }
 body[data-time-of-day="afternoon"] .sky {
-  background:
-    radial-gradient(ellipse at 22% 35%, #fff 0 8%, transparent 9%),
-    radial-gradient(ellipse at 72% 25%, #fff 0 12%, transparent 13%),
-    radial-gradient(ellipse at 90% 52%, #fff 0 10%, transparent 11%),
-    linear-gradient(130deg, #6ca7d8, #edf7ff 55%, #81b9dd);
+  display: none;
 }
 body[data-time-of-day="evening"] .welcome {
-  background: #d7b9c7;
+  background: #fff;
 }
 body[data-time-of-day="evening"] .sky {
-  background:
-    radial-gradient(ellipse at 22% 35%, #ffe9b3 0 8%, transparent 9%),
-    radial-gradient(ellipse at 72% 25%, #fff0c2 0 12%, transparent 13%),
-    radial-gradient(ellipse at 90% 52%, #ffdf8a 0 10%, transparent 11%),
-    linear-gradient(130deg, #5b74ad, #efc7b1 52%, #d47c70);
+  display: none;
 }
 body[data-time-of-day="night"] .welcome {
-  background: #1b1f2b;
+  background: #fff;
 }
 body[data-time-of-day="night"] .sky {
-  background:
-    radial-gradient(ellipse at 22% 35%, #f3eaf8 0 8%, transparent 9%),
-    radial-gradient(ellipse at 72% 25%, #dce4ff 0 12%, transparent 13%),
-    radial-gradient(ellipse at 90% 52%, #dbe7ff 0 10%, transparent 11%),
-    linear-gradient(130deg, #0e1831, #2d3b5f 52%, #122340);
+  display: none;
 }
 body[data-time-of-day="night"] .audio-note,
 body[data-time-of-day="night"] .focus-label,
-body[data-time-of-day="night"] .hanging,
-body[data-time-of-day="night"] .timer-controls button,
-body[data-time-of-day="night"] .round-arrow {
+body[data-time-of-day="night"] .timer-controls button {
   background: rgba(255,255,255,.9);
 }
 .screen {
   min-height: 100vh;
+  background: #fff !important;
 }
 .hidden {
   display: none !important;
@@ -95,59 +78,16 @@ body[data-time-of-day="night"] .round-arrow {
   width: min(100%, 1500px);
   border: 4px solid #111;
   border-radius: 4px;
-  background: #b6d5e8;
+  background: #fff;
 }
 .sky {
-  position: absolute;
-  inset: 0 0 16%;
-  background:
-    radial-gradient(
-      ellipse at 22% 35%,
-      #fff 0 8%,
-      transparent 9%
-    ),
-    radial-gradient(
-      ellipse at 72% 25%,
-      #fff 0 12%,
-      transparent 13%
-    ),
-    radial-gradient(
-      ellipse at 90% 52%,
-      #fff 0 10%,
-      transparent 11%
-    ),
-    linear-gradient(
-      130deg,
-      #7899dd,
-      #d9e8f2 58%,
-      #7197d4
-    );
-  filter: contrast(1.15);
+  display: none;
 }
 .sky::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image:
-    radial-gradient(#1116 .7px, transparent .8px);
-  background-size: 3px 3px;
-  opacity: .45;
+  content: none;
 }
 .ground {
-  position: absolute;
-  bottom: 0;
-  z-index: 2;
-  height: 16%;
-  width: 100%;
-  background:
-    repeating-linear-gradient(
-      8deg,
-      #b9c8c5,
-      #b9c8c5 10px,
-      #a3b3b2 11px,
-      #d1d6d0 14px
-    );
-  border-top: 3px solid #111;
+  display: none;
 }
 .street-header {
   position: absolute;
@@ -187,6 +127,8 @@ body[data-time-of-day="night"] .round-arrow {
   display: flex;
   gap: 28px;
   align-items: flex-end;
+  justify-content: center;
+  width: 100%;
   min-width: max-content;
   height: 100%;
 }
@@ -311,40 +253,20 @@ body[data-time-of-day="night"] .round-arrow {
 .shop-library {
   background: linear-gradient(180deg, #dfeeff, #b1caee 42%, #7f9fca 100%);
 }
-.shop.shop-image-card {
-  flex: 0 0 clamp(300px, 38vw, 420px);
-  height: 100%;
-  min-height: 0;
-  top: 24px;
-  border: 0;
-  padding: 0;
-  background: transparent;
-  box-shadow: none;
+.cafe-window {
+  background: linear-gradient(180deg, #fff7dc, #c99a67);
 }
-.shop-image-card:first-child {
-  margin-left: -80px;
+.cafe-window span {
+  background: #f7ebd2;
+  border-radius: 50%;
+  height: 54%;
 }
-.shop-image-card + .shop-image-card {
-  margin-left: -72px;
+.library-window {
+  background: linear-gradient(180deg, #cce0ef, #7898b9);
 }
-.shop-cafe.shop-image-card,
-.shop-library.shop-image-card {
-  top: 44px;
-}
-.shop.shop-image-card::before {
-  content: none;
-}
-.shop-image {
-  display: block;
-  width: 100%;
-  height: auto;
-  max-height: 100%;
-  object-fit: contain;
-  pointer-events: none;
-}
-.shop.shop-image-card:hover,
-.shop.shop-image-card:focus-visible {
-  box-shadow: none;
+.library-window span {
+  height: 54%;
+  background: linear-gradient(180deg, #f4d06f 0 25%, #9f6a50 25% 50%, #6f8b72 50% 75%, #d9a3a0 75%);
 }
 .shop-arcade {
   background: linear-gradient(180deg, #ffd8eb, #f4a7d6 42%, #d27bc0 100%);
@@ -428,14 +350,6 @@ body[data-time-of-day="night"] .round-arrow {
   font-size: 18px;
   font-weight: 500;
   text-align: center;
-}
-.custom-book-option {
-  grid-column: 2 / span 2;
-  border-style: dashed;
-  background: #f6f1df;
-}
-.custom-book-option.selected {
-  background: #f3e8c7;
 }
 .custom-time-field {
   display: grid;
@@ -597,26 +511,13 @@ body[data-time-of-day="night"] .round-arrow {
   display: grid;
   place-items: center;
   padding: 25px;
-  background:
-    repeating-linear-gradient(
-      0deg,
-      #201c19 0 2px,
-      transparent 2px 80px
-    ),
-    repeating-linear-gradient(
-      90deg,
-      #7b4b21,
-      #d39a45 8%,
-      #30221a 17%,
-      #c18432 27%
-    );
-  background-blend-mode: multiply;
+  background: #fff;
 }
 .paper {
   width: min(1040px, 94vw);
   min-height: calc(100vh - 70px);
   background: #fff;
-  border: 4px solid #111;
+  border: 0;
   border-radius: 3px 8px 2px 20px;
   clip-path:
     polygon(
@@ -831,9 +732,25 @@ h1 {
   gap: 17px;
   font-size: 18px;
   padding: 0 4px;
+  position: relative;
   opacity: 0;
   transform: translateY(18px) scale(.96);
   animation: drinkRise .5s ease forwards;
+}
+.drink.selected {
+  font-weight: 700;
+}
+.drink.selected::after {
+  content: "selected";
+  position: absolute;
+  left: 50%;
+  bottom: -22px;
+  transform: translateX(-50%);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: .08em;
 }
 .drink:nth-child(1) { animation-delay: .08s; }
 .drink:nth-child(2) { animation-delay: .14s; }
@@ -883,8 +800,7 @@ h1 {
   transform: translateY(-5px);
 }
 .drink.selected .drink-art {
-  outline: 2px solid #111;
-  outline-offset: 6px;
+  transform: scale(.96);
 }
 .red {
   background:
@@ -1053,7 +969,7 @@ h1 {
   min-height: 100vh;
   position: relative;
   overflow: hidden;
-  background: #efefeb;
+  background: #fff;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1066,24 +982,6 @@ h1 {
   padding: 17px 28px;
   font-size: 20px;
   z-index: 2;
-}
-.hanging {
-  position: absolute;
-  top: 0;
-  background: #fff;
-  border: 3px solid #111;
-  border-top: 0;
-  border-radius: 0 0 8px 8px;
-  height: 128px;
-  width: 110px;
-  font-size: 45px;
-}
-.coffee-hanger {
-  left: 2%;
-}
-.profile-hanger {
-  right: 2%;
-  font-size: 30px;
 }
 .timer {
   font-size: clamp(90px, 9vw, 150px);
@@ -1395,9 +1293,6 @@ h1 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     width: 100%;
     gap: 12px;
-  }
-  .custom-book-option {
-    grid-column: 1 / -1;
   }
   .book-option {
     padding: 14px 8px;
