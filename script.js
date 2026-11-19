@@ -567,9 +567,8 @@ if (libraryNext) {
     sessionType = "library";
     remaining = minutes * 60;
     updateTime();
-    document.getElementById("receiptDrink").textContent = isCustom
-      ? `OPEN READING · ${minutes} MIN`
-      : `${books} BOOK${books > 1 ? "S" : ""}`;
+    document.getElementById("receiptDrink").textContent =
+      `${books} BOOK${books > 1 ? "S" : ""}`;
     document.getElementById("receiptHeading").textContent = "READING FOR";
     document.getElementById("orderNumber").textContent = orderNo;
     show("name");
